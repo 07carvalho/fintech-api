@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - pokenetwork
+  api:
+    container_name: dev-api
+    build: ./api
+    environment:
+      - SECRET_KEY=&)on7hy2$n7w5)itkwt0rla5%u$vsq6q%)+_t@4i%4r_@0n6wn
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./api:/app/api
+    ports:
+      - '8000:8000'
+    networks:
+      - pokenetwork
+    restart: always
+    depends_on:
+      - db
+
+volumes:
+  db:
+
+networks:
+  pokenetwork:
+      driver: bridge
+
