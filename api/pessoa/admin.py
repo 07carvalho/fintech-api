@@ -1,3 +1,7 @@
 from django.contrib import admin
+from pessoa.models.pessoa import Pessoa
 
-# Register your models here.
+
+@admin.register(Pessoa)
+class PessoaAdmin(admin.ModelAdmin):
+    pass

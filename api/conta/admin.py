@@ -1,3 +1,7 @@
 from django.contrib import admin
+from conta.models.conta import Conta
 
-# Register your models here.
+
+@admin.register(Conta)
+class ContaAdmin(admin.ModelAdmin):
+    pass

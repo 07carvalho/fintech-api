@@ -8,7 +8,8 @@ class Pessoa(models.Model):
     dataNascimento = models.DateField(blank=False, null=False)
 
     class Meta:
-        app_label = 'api'
+        app_label = 'pessoa'
+        db_table = 'pessoas'
 
     def __str__(self):
         return '{0} - {1} {2}'.format(self.idPessoa, self.nome, self.cpf)
