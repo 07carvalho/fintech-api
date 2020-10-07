@@ -1,3 +1,4 @@
+from rest_framework import exceptions
 from rest_framework.exceptions import PermissionDenied, NotFound
 from pessoa.models.pessoa import Pessoa
 
@@ -10,6 +11,7 @@ def obter_pessoa(operation):
                 pessoa = Pessoa.objects.get(cpf=cpf)
                 return operation(api, request, pessoa)
             except Pessoa.DoesNotExist:
-                raise NotFound
+                raise exceptions.AuthenticationFailed(
+                    detail={'authentication_error': 'Forneça um token válido.'})
         raise PermissionDenied
     return wrapper

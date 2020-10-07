@@ -15,3 +15,23 @@ class Transacao(models.Model):
 
     def __str__(self):
         return '{0} - {1} {2}'.format(self.idTransacao, self.valor, self.dataTransacao)
+
+    @staticmethod
+    def efetua_deposito(id_conta: int, valor: float):
+        conta = Conta.deposito(id_conta, valor)
+        if conta is not None:
+            transacao = Transacao.objects.create(
+                idConta=conta, valor=valor
+            )
+            return transacao
+        return None
+
+    @staticmethod
+    def efetua_saque(id_conta: int, valor: float):
+        conta = Conta.saque(id_conta, valor)
+        if conta is not None:
+            transacao = Transacao.objects.create(
+                idConta=conta, valor=valor
+            )
+            return transacao
+        return None

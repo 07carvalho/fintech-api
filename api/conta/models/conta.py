@@ -1,4 +1,7 @@
-from django.db import models
+from decimal import Decimal
+from django.db import models, transaction
+from rest_framework import exceptions
+
 from pessoa.models.pessoa import Pessoa
 
 
@@ -25,3 +28,30 @@ class Conta(models.Model):
 
     def __str__(self):
         return '{0} - {1} {2}'.format(self.idPessoa, self.idConta, self.tipoConta)
+
+    @classmethod
+    def deposito(cls, id_conta: int, valor: float) -> 'Conta':
+        with transaction.atomic():
+            conta = (
+                cls.objects.select_for_update().get(idConta=id_conta)
+            )
+            if conta.flagAtivo and valor >= 0:
+                conta.saldo += Decimal(valor)
+                conta.save()
+                return conta
+        return None
+
+    @classmethod
+    def saque(cls, id_conta: int, valor: float) -> 'Conta':
+        with transaction.atomic():
+            conta = (
+                cls.objects.select_for_update().get(idConta=id_conta)
+            )
+            if conta.flagAtivo and valor >= 0:
+                if conta.saldo < valor:
+                    raise exceptions.PermissionDenied(
+                        detail={'saldo_error': 'Saldo insuficiente para efetuar o saque'})
+                conta.saldo -= valor
+                conta.save()
+                return conta
+        return None
