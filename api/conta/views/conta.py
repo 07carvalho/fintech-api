@@ -25,14 +25,8 @@ class ContaCreateApi(APIView):
 class ContaApi(APIView):
     serializer_class = ContaSerializer
 
-    def get_object(self, id_conta):
-        try:
-            return Conta.objects.get(idConta=id_conta, flagAtivo=True)
-        except Conta.DoesNotExist:
-            raise exceptions.NotFound({'not_found': 'Esta conta não existe ou está desativada.'})
-
     def delete(self, request, id_conta):
-        conta = self.get_object(id_conta)
+        conta = Conta.obter_conta(id_conta)
         conta.flagAtivo = False
         conta.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

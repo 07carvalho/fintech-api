@@ -29,6 +29,12 @@ class Conta(models.Model):
     def __str__(self):
         return '{0} - {1} {2}'.format(self.idPessoa, self.idConta, self.tipoConta)
 
+    def obter_conta(id_conta: int) -> 'Conta':
+        try:
+            return Conta.objects.get(idConta=id_conta, flagAtivo=True)
+        except Conta.DoesNotExist:
+            raise exceptions.NotFound({'not_found': 'Esta conta não existe ou está desativada.'})
+
     @classmethod
     def deposito(cls, id_conta: int, valor: float) -> 'Conta':
         with transaction.atomic():

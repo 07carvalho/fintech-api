@@ -17,6 +17,12 @@ class Transacao(models.Model):
         return '{0} - {1} {2}'.format(self.idTransacao, self.valor, self.dataTransacao)
 
     @staticmethod
+    def listar_transacoes_por_conta(id_conta: int, ordem: str = 'maisAntigas') -> 'Transacao':
+        conta = Conta.obter_conta(id_conta)
+        ordenacao = '-idTransacao' if ordem is 'maisAntigas' else 'idTransacao'
+        return Transacao.objects.filter(idConta=conta).order_by(ordenacao)
+
+    @staticmethod
     def efetua_deposito(id_conta: int, valor: float):
         conta = Conta.deposito(id_conta, valor)
         if conta is not None:
