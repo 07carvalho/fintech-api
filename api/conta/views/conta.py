@@ -1,7 +1,7 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, exceptions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from conta.models import Conta
 from conta.serializers.conta import ContaSerializer
 from pessoa.decorators import obter_pessoa
@@ -10,6 +10,7 @@ from pessoa.decorators import obter_pessoa
 class ContaCreateApi(APIView):
     serializer_class = ContaSerializer
 
+    @swagger_auto_schema(responses={200: ContaSerializer()})
     @obter_pessoa
     def post(self, request, pessoa):
         serializer = ContaSerializer(data=request.data)

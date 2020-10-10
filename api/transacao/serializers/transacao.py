@@ -6,4 +6,5 @@ class TransacaoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transacao
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ('idConta', )
