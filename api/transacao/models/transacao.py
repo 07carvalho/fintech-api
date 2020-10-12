@@ -1,3 +1,5 @@
+import pytz
+from datetime import datetime, timedelta
 from django.db import models
 from conta.models.conta import Conta
 
@@ -7,7 +9,7 @@ class Transacao(models.Model):
     idTransacao = models.AutoField(primary_key=True)
     idConta = models.ForeignKey(Conta, on_delete=models.CASCADE)
     valor = models.DecimalField(max_digits=9, decimal_places=2)
-    dataTransacao = models.DateField(auto_now_add=True, editable=False)
+    dataTransacao = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         app_label = 'transacao'
@@ -17,10 +19,19 @@ class Transacao(models.Model):
         return '{0} - {1} {2}'.format(self.idTransacao, self.valor, self.dataTransacao)
 
     @staticmethod
-    def listar_transacoes_por_conta(id_conta: int, ordem: str = 'maisAntigas') -> 'Transacao':
+    def get_data(num_dias: int):
+        return datetime.now(tz=pytz.UTC) - timedelta(days=num_dias)
+
+    @staticmethod
+    def get_data_meianoite(num_dias: int):
+        return datetime.combine(datetime.now(tz=pytz.UTC), datetime.min.time()) - timedelta(days=num_dias)
+
+    def listar_transacoes_por_conta(self, id_conta: int, ordem: str, dias: int) -> 'Transacao':
         conta = Conta.obter_conta(id_conta)
-        ordenacao = '-idTransacao' if ordem is 'maisAntigas' else 'idTransacao'
-        return Transacao.objects.filter(idConta=conta).order_by(ordenacao)
+        return Transacao.objects.filter(
+                    idConta=conta,
+                    dataTransacao__gte=self.get_data_meianoite(dias)
+                ).order_by(ordem)
 
     @staticmethod
     def efetua_deposito(id_conta: int, valor: float):

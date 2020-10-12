@@ -1,3 +1,4 @@
+import pytz
 from datetime import datetime
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
@@ -12,7 +13,7 @@ class TestSaqueApi(APITestCase):
         data = {
             'nome': 'Fulano de Tal',
             'cpf': self.cpf,
-            'dataNascimento': datetime.strptime('1980/01/30', '%Y/%m/%d')
+            'dataNascimento': datetime(1980, 1, 30, 1, 1, 1, tzinfo=pytz.UTC)
         }
         self.pessoa = Pessoa.objects.create(**data)
 

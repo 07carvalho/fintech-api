@@ -19,7 +19,7 @@ class Conta(models.Model):
     limiteSaqueDiario = models.DecimalField(max_digits=9, decimal_places=2, blank=False, null=False)
     flagAtivo = models.BooleanField(default=True, blank=False, null=False)
     tipoConta = models.IntegerField(choices=TYPE)
-    dataCriacao = models.DateField(auto_now_add=True, editable=False)
+    dataCriacao = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         app_label = 'conta'
