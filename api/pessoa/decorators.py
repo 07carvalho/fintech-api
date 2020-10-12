@@ -12,6 +12,6 @@ def obter_pessoa(operation):
                 return operation(api, request, pessoa)
             except Pessoa.DoesNotExist:
                 raise exceptions.AuthenticationFailed(
-                    detail={'authentication_error': 'Forneça um token válido.'})
+                    detail={'authentication_error': 'Forneça um CPF válido.'})
         raise PermissionDenied
     return wrapper

@@ -29,9 +29,10 @@ class Conta(models.Model):
     def __str__(self):
         return '{0} - {1} {2}'.format(self.idPessoa, self.idConta, self.tipoConta)
 
-    def obter_conta(id_conta: int) -> 'Conta':
+    @staticmethod
+    def obter_conta(id_conta: int, pessoa: 'Pessoa') -> 'Conta':
         try:
-            return Conta.objects.get(idConta=id_conta, flagAtivo=True)
+            return Conta.objects.get(idConta=id_conta, idPessoa=pessoa, flagAtivo=True)
         except Conta.DoesNotExist:
             raise exceptions.NotFound({'not_found': 'Esta conta não existe ou está desativada.'})
 

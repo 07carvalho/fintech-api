@@ -37,7 +37,10 @@ class TestSaqueApi(APITestCase):
         self.assertEqual(saldo_atual, response.data.get('saldo'))
 
     def test_consulta_saldo_conta_inativa(self):
-        self.conta.flagAtivo = False
-        self.conta.save()
+        url_conta = reverse('conta_api', kwargs={'id_conta': self.conta.idConta})
+        response = self.client.delete(url_conta)
+        # bloqueia conta
+        self.assertEqual(204, response.status_code)
+        # tenta consultar o saldo novamente
         response = self.client.get(self.url)
         self.assertEqual(404, response.status_code)

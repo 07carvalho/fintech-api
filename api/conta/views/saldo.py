@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, exceptions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,14 +11,10 @@ from pessoa.decorators import obter_pessoa
 class SaldoApi(APIView):
     serializer_class = ContaSerializer
 
-    def get_object(self, id_conta):
-        try:
-            return Conta.objects.get(idConta=id_conta, flagAtivo=True)
-        except Conta.DoesNotExist:
-            raise exceptions.NotFound({'not_found': 'Esta conta não existe ou está desativada.'})
-
-    # @obter_pessoa
-    def get(self, request, id_conta):
-        conta = self.get_object(id_conta)
+    @swagger_auto_schema(responses={200: SaldoSerializer()})
+    @obter_pessoa
+    def get(self, request, pessoa):
+        id_conta = self.kwargs.get('id_conta')
+        conta = Conta.obter_conta(id_conta, pessoa)
         serializer = SaldoSerializer(conta)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -10,7 +10,8 @@ from pessoa.decorators import obter_pessoa
 class ContaCreateApi(APIView):
     serializer_class = ContaSerializer
 
-    @swagger_auto_schema(responses={200: ContaSerializer()})
+    @swagger_auto_schema(request_body=ContaSerializer,
+                         responses={200: ContaSerializer()})
     @obter_pessoa
     def post(self, request, pessoa):
         serializer = ContaSerializer(data=request.data)
@@ -26,8 +27,10 @@ class ContaCreateApi(APIView):
 class ContaApi(APIView):
     serializer_class = ContaSerializer
 
-    def delete(self, request, id_conta):
-        conta = Conta.obter_conta(id_conta)
+    @obter_pessoa
+    def delete(self, request, pessoa):
+        id_conta = self.kwargs.get('id_conta')
+        conta = Conta.obter_conta(id_conta, pessoa)
         conta.flagAtivo = False
         conta.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
