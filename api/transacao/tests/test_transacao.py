@@ -1,10 +1,10 @@
-import pytz
 from datetime import datetime
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from conta.models import Conta
 from pessoa.models.pessoa import Pessoa
 from transacao.models.transacao import Transacao
+from transacao.enum import Transacao as Transacao_Enum
 
 
 class TestTransacaoApi(APITestCase):
@@ -14,7 +14,7 @@ class TestTransacaoApi(APITestCase):
         data = {
             'nome': 'Fulano de Tal',
             'cpf': self.cpf,
-            'dataNascimento': datetime(1980, 1, 30, 1, 1, 1, tzinfo=pytz.UTC)
+            'dataNascimento': datetime(1980, 1, 30)
         }
         self.pessoa = Pessoa.objects.create(**data)
 
@@ -27,7 +27,8 @@ class TestTransacaoApi(APITestCase):
 
         dias = [1, 7, 30, 60, 90, 120]
         for d in dias:
-            transacao= {'idConta': self.conta, 'valor': 100}
+            transacao= {'idConta': self.conta, 'valor': 100,
+                        'tipoTransacao': Transacao_Enum.DEPOSITO.value}
             obj = Transacao.objects.create(**transacao)
             obj.dataTransacao = Transacao.get_data(d)
             obj.save()

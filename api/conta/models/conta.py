@@ -1,16 +1,16 @@
 from decimal import Decimal
 from django.db import models, transaction
 from rest_framework import exceptions
-
+from conta.enums import Conta
 from pessoa.models.pessoa import Pessoa
 
 
 class Conta(models.Model):
 
     TYPE = (
-        (1, 'Conta Corrente - Pessoa Física'),
-        (2, 'Conta Poupança'),
-        (3, 'Conta Corrente - Pessoa Jurídica'),
+        (Conta.CONTA_CORRENTE_PF.value, 'Conta Corrente - Pessoa Física'),
+        (Conta.CONTA_POUPANCA.value, 'Conta Poupança'),
+        (Conta.CONTA_CORRENTE_PJ.value, 'Conta Corrente - Pessoa Jurídica'),
     )
 
     idConta = models.AutoField(primary_key=True)

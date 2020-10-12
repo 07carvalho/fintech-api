@@ -2,13 +2,20 @@ import pytz
 from datetime import datetime, timedelta
 from django.db import models
 from conta.models.conta import Conta
+from transacao.enum import Transacao as Transacao_Enum
 
 
 class Transacao(models.Model):
 
+    TYPE = (
+        (Transacao_Enum.DEPOSITO.value, 'Depósito'),
+        (Transacao_Enum.SAQUE.value, 'Saque'),
+    )
+
     idTransacao = models.AutoField(primary_key=True)
     idConta = models.ForeignKey(Conta, on_delete=models.CASCADE)
     valor = models.DecimalField(max_digits=9, decimal_places=2)
+    tipoTransacao = models.IntegerField(choices=TYPE)
     dataTransacao = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
@@ -26,11 +33,10 @@ class Transacao(models.Model):
     def get_data_meianoite(num_dias: int):
         return datetime.combine(datetime.now(tz=pytz.UTC), datetime.min.time()) - timedelta(days=num_dias)
 
-    def listar_transacoes_por_conta(self, id_conta: int, ordem: str, dias: int) -> 'Transacao':
-        conta = Conta.obter_conta(id_conta)
+    def listar_transacoes_por_conta(self, conta: 'Conta', ordem: str, dias: int) -> 'Transacao':
         return Transacao.objects.filter(
                     idConta=conta,
-                    dataTransacao__gte=self.get_data_meianoite(dias)
+                    dataTransacao__gte=self.get_data_meianoite(dias),
                 ).order_by(ordem)
 
     @staticmethod
@@ -38,7 +44,8 @@ class Transacao(models.Model):
         conta = Conta.deposito(id_conta, valor)
         if conta is not None:
             transacao = Transacao.objects.create(
-                idConta=conta, valor=valor
+                idConta=conta, valor=valor,
+                tipoTransacao=Transacao_Enum.DEPOSITO.value
             )
             return transacao
         return None
@@ -48,7 +55,8 @@ class Transacao(models.Model):
         conta = Conta.saque(id_conta, valor)
         if conta is not None:
             transacao = Transacao.objects.create(
-                idConta=conta, valor=valor
+                idConta=conta, valor=valor,
+                tipoTransacao=Transacao_Enum.SAQUE.value
             )
             return transacao
         return None
