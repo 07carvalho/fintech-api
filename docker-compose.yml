@@ -13,7 +13,7 @@ services:
     container_name: dev-api
     build: ./api
     environment:
-      - SECRET_KEY=kkaw*&u0nl0i0#50e$6%6y#ab*_jd-b_8v4-lsjj1j3@mg@r&a
+      - SECRET_KEY=kkaw*&u0nl0i0#50e6%6y#ab*_jd-b_8v4-lsjj1j3@mg@r&a
       - DATABASE_ENGINE=django.db.backends.postgresql
       - DATABASE_NAME=postgres
       - DATABASE_USER=postgres

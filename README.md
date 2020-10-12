@@ -23,12 +23,26 @@ To run this application using Docker, run:
 Create the database tables:
 > docker-compose run api python3 manage.py migrate
 
+Populate with a superuser and a user
+> docker-compose run api python manage.py loaddata data.json
+
 Then:
 > docker-compose up -d
 
 Backend service will be available in:
 
 [http://localhost:8000](http://localhost:8000)
+
+## Auth
+Add an `Authentication` field with value `12345678900` in request header. For example:
+> curl --location --request POST 'http://localhost:8000/api/v1/contas' \
+--header 'Authorization: 12345678900' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "limiteSaqueDiario": 100,
+    "tipoConta": 4
+}'
+
 
 ## Documentation
 The API documentation is available in:
