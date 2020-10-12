@@ -51,4 +51,4 @@ The API documentation is available in:
 
 ## Testing
 To test the backend service, run:
-> docker-compose run api python3 manage.py test base
+> docker-compose run api python3 manage.py test
